@@ -1,0 +1,87 @@
+/*******************************************************************
+
+Darkbox.css - CSS styles for the Darkbox slideshow/comic reader tool  
+
+Author: Mikko Jakonen
+
+********************************************************************/
+
+#DarkboxOverlay {
+background:url(img/black50.png);
+position:fixed;
+top:0; bottom:0; left:0; right:0;
+z-index:1000;
+display:none;
+}
+
+#DarkboxBook {
+background:black;
+height:100%;
+width:820px;
+margin:auto;
+}
+
+#DarkboxPage {
+position:relative;
+width:600px;
+float:left;
+}
+
+#DarkboxImage {
+display:block;
+max-height:850px;
+max-width:600px;
+margin:auto;
+}
+
+#DarkboxLoading {
+display:none;
+position:absolute;
+left:0;
+right:0;
+margin:0;
+top:40px;
+z-index:51000;
+}
+
+#DarkboxNext, #DarkboxPrev, #DarkboxFirst, #DarkboxLast {
+margin:0;
+float:left;
+width:50px;
+height:100%;
+position:relative;
+}
+
+#DarkboxNext img, #DarkboxPrev img, #DarkboxFirst img, #DarkboxLast img {
+position:absolute;
+top:0;
+bottom:0;
+margin:auto;
+height:50px;
+}
+
+#DarkboxFirst, #DarkboxLast {
+width:60px;
+}
+
+#DarkboxNext:hover, #DarkboxPrev:hover, #DarkboxFirst:hover, #DarkboxLast:hover {
+background-color:#333333;
+}
+
+#DarkboxClose {
+position:absolute;
+top:0;
+right:0;
+width:50px;
+height:50px;
+background:url(img/close.png) no-repeat top right;
+}
+
+#DarkboxPages {
+position:absolute;
+bottom:0; right:0;
+padding:0.5em 0.4em;
+background:url(img/black50.png);
+font-size:150%;
+color:white;
+}
