@@ -40,11 +40,14 @@
             close       : '#DarkboxClose'
         }, options);
         
+        //initialize state variables:
         var currentPage = 1;
+        var isVisible = true;
+        var shownImage = new Image();
         
         
+        //begin the darkness:
         return initialize(this);
-        
          
         
         /**
@@ -84,6 +87,15 @@
             $(settings.prev).click( function() { showPage(currentPage-1); });
             $(settings.next).click( function() { showPage(currentPage+1); });
             $(settings.close).click(hide);
+            //keyboard bindings:
+            $(document).keyup(function(e) {
+                if(!isVisible) return;
+                if(e.which == settings.keyHide) hide();
+                if(e.which == settings.keyNext) showPage(currentPage+1);
+                if(e.which == settings.keyPrev) showPage(currentPage-1);
+                if(e.which == settings.keySkipNext) showPage(currentPage+10);
+                if(e.which == settings.keySkipPrev) showPage(currentPage-10);
+            });
             
             currentPage = 1;
             showPage(currentPage);
@@ -102,8 +114,8 @@
          * page.
          */
         function showPage(pageNum) {
-            currentPage = pageNum;
-            $(settings.currentPage).text(pageNum);    
+            currentPage = Math.min(Math.max(pageNum, 1), settings.numPages);
+            $(settings.currentPage).text(currentPage);    
         
         
         }
