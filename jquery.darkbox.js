@@ -6,8 +6,8 @@
         var settings = $.extend({
             bookname    : null,
             path        : "pages/",
-            extension   : ".jpg",
             numPages    : 11,
+            srcPattern  : "####.jpg",
             
             //keyboard shortcuts:
             keyHide     : 27,   //esc
@@ -41,10 +41,11 @@
         }, options);
         
         //initialize state variables:
-        var currentPage = 1;
+        var currentPage = 0;
         var isVisible = true;
         var shownImage = new Image();
-        
+        var bufferImage = new Image();
+        bufferImage.page = 0;
         
         //begin the darkness:
         return initialize(this);
@@ -97,10 +98,10 @@
                 if(e.which == settings.keySkipPrev) showPage(currentPage-10);
             });
             
-            currentPage = 1;
-            showPage(currentPage);
+            showPage(1);
             return elem;
         } 
+        
         
         /**
          * Hides the Darkbox overlay.
@@ -109,17 +110,89 @@
             $(settings.overlay).css("display", "none");
         }
         
+        
         /**
-         * Swaps the page with the number pageNum as the currently viewed
-         * page.
+         * Starts loading the pageNum:th image onto the screen, or puts it there
+         * immediately if it was already buffered.
          */
         function showPage(pageNum) {
-            currentPage = Math.min(Math.max(pageNum, 1), settings.numPages);
-            $(settings.currentPage).text(currentPage);    
-        
-        
+            var newPage = Math.min(Math.max(pageNum, 1), settings.numPages);
+            if(newPage == currentPage) return;
+            currentPage = newPage;
+            
+            $(settings.currentPage).text(currentPage);
+            
+            if(bufferImage.page == currentPage) {
+                if(bufferImage.complete) {
+                    shownImage.src = bufferImage.src;
+                    readyToShow();
+                }
+            } 
+            else {  
+                var src = getSourceFor(currentPage);
+           
+                shownImage.src = src;
+                $(shownImage).load(readyToShow).each(function(){
+                    if(this.complete) $(this).trigger("load");
+                });
+                $(settings.loading).css("display", "block");
+            }
+            
+            buffer(currentPage+1);
         }
         
+        
+        /**
+         * Start loading the pageNum:th image into the buffer.
+         */
+        function buffer(pageNum) {
+            if(pageNum <= 0 || pageNum > settings.numPages) return;
+            src = getSourceFor(pageNum);
+            
+            bufferImage.page = pageNum;
+            bufferImage.src = src;
+            $(bufferImage).load(bufferComplete).each(function() {
+                if(this.complete) $(this).trigger("load");
+            });
+        }
+        
+        
+        /**
+         * Called when the buffer image has finished loading. If we were waiting for
+         * the buffer to load, show the image immediately.
+         */
+        function bufferComplete() {
+            if(bufferImage.page == currentPage) {
+                shownImage.src = bufferImage.src;
+                readyToShow();
+            }
+        }
+        
+        
+        /**
+         * This function is called when an image is ready to be shown on the darkbox
+         * display.
+         */
+        function readyToShow() {
+            $(settings.loading).css("display", "none");
+            $(settings.mainImage).attr("src", shownImage.src);
+        }
+        
+        
+        /**
+         * Returns the source string (filename) for the num:th image with current settings.
+         * Eg: getSourceFor(3) -> "0003.jpg", if we are using the srcPattern "####.jpg"
+         */
+        function getSourceFor(num) {
+            if(settings.srcPattern) {
+                var pattern = settings.srcPattern.match(/(#+)/g)[0];
+                var src = "" + num;
+                while(src.length < pattern.length) {
+                    src = "0" + src;
+                }
+                return settings.path + settings.srcPattern.replace(pattern, src);
+            }
+        }
         
     };
 })(jQuery);
