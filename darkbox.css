@@ -1,11 +1,10 @@
-/*******************************************************************
-
-Darkbox.css - CSS styles for the Darkbox slideshow/comic reader tool  
-
-Author: Mikko Jakonen
-
-********************************************************************/
-
+/**
+ * CSS Styles for the Darkbox jQuery plugin
+ * 
+ * Copyright (c) Mikko Jakonen 2012
+ *  Licenced under the MIT licence, see LICENCE.txt for details.
+ */
+ 
 #DarkboxOverlay {
 background:url(img/black50.png);
 position:fixed;

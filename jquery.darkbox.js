@@ -1,3 +1,9 @@
+/**
+ * Darkbox jQuery plugin
+ * 
+ * Copyright (c) Mikko Jakonen 2012
+ * Licenced under the MIT licence, see LICENCE.txt for details.
+ */
 (function($) {
 
     $.fn.darkbox = function(options) {
