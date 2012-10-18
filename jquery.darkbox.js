@@ -47,6 +47,7 @@
         }, options);
         
         //initialize state variables:
+        var container = this;
         var currentPage = 0;
         var isVisible = true;
         var shownImage = new Image();
@@ -114,6 +115,15 @@
          */
         function hide() {
             $(settings.overlay).css("display", "none");
+            isVisible = false;
+        }
+        
+        /**
+         * Shows the Darkbox overlay.
+         */
+        function show() {
+            $(settings.overlay).css("display", "block");
+            isVisible = true;
         }
         
         
@@ -149,6 +159,17 @@
         
         
         /**
+         * This function is called when an image is ready to be shown on the darkbox
+         * display.
+         */
+        function readyToShow() {
+            $(settings.loading).css("display", "none");
+            $(settings.mainImage).attr("src", shownImage.src);
+            fitToPage();
+        }
+        
+        
+        /**
          * Start loading the pageNum:th image into the buffer.
          */
         function buffer(pageNum) {
@@ -176,16 +197,6 @@
         
         
         /**
-         * This function is called when an image is ready to be shown on the darkbox
-         * display.
-         */
-        function readyToShow() {
-            $(settings.loading).css("display", "none");
-            $(settings.mainImage).attr("src", shownImage.src);
-        }
-        
-        
-        /**
          * Returns the source string (filename) for the num:th image with current settings.
          * Eg: getSourceFor(3) -> "0003.jpg", if we are using the srcPattern "####.jpg"
          */
@@ -198,6 +209,16 @@
                 }
                 return settings.path + settings.srcPattern.replace(pattern, src);
             }
+        }
+        
+        
+        /**
+         * Adjusts the page image to fill the whole height of the parent
+         * container.
+         */
+        function fitToPage() {
+            var h = $(window).height();
+            if(h > 0) $(settings.mainImage).css("height", h).css("width", "auto");
         }
         
     };
