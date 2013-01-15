@@ -12,8 +12,9 @@
         var settings = $.extend({
             bookname    : null,
             path        : "pages/",
-            numPages    : 11,
+            numPages    : 10,
             srcPattern  : "####.jpg",
+            begin       : 0,
             
             //keyboard shortcuts:
             keyHide     : 27,   //esc
@@ -254,7 +255,7 @@
         function getSourceFor(num) {
             if(settings.srcPattern) {
                 var pattern = settings.srcPattern.match(/(#+)/g)[0];
-                var src = "" + num;
+                var src = "" + (num + settings.begin);
                 while(src.length < pattern.length) {
                     src = "0" + src;
                 }
