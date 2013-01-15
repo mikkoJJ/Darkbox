@@ -24,10 +24,14 @@
             
             //images:
             imgNext     : 'img/forward.png',
+            imgNextNL   : 'img/forwardNOLINK.png',
             imgPrev     : 'img/backward.png',
+            imgPrevNL   : 'img/backwardNOLINK.png',
             imgLoading  : 'img/loading.png',
             imgFirst    : 'img/first.png',
+            imgFirstNL  : 'img/firstNOLINK.png',
             imgLast     : 'img/last.png',
+            imgLastNL   : 'img/lastNOLINK.png',
             imgClose    : 'img/close.png',
             
             //element ID names: (NOTE: these must match the ones in darkbox.css)
@@ -52,6 +56,8 @@
         var isVisible = true;
         var shownImage = new Image();
         var bufferImage = new Image();
+        var navImages = [];
+        var navImagesDisabled = [];
         bufferImage.page = 0;
         
         //begin the darkness:
@@ -89,11 +95,25 @@
             
             elem.append(html);
             
+            //preload link images:
+            for (var i = 0; i<4; i++) {
+                navImages[i] = new Image();
+                navImagesDisabled[i] = new Image();
+            }
+            navImages[0].src = settings.imgFirst;
+            navImages[1].src = settings.imgPrev;
+            navImages[2].src = settings.imgNext;
+            navImages[3].src = settings.imgLast;
+            navImagesDisabled[0].src = settings.imgFirstNL;
+            navImagesDisabled[1].src = settings.imgPrevNL;
+            navImagesDisabled[2].src = settings.imgNextNL;
+            navImagesDisabled[3].src = settings.imgLastNL;
+            
             //event bindings:
             $(settings.first).click(function() { showPage(1); });
-            $(settings.last).click( function() { showPage(settings.numPages); });
-            $(settings.prev).click( function() { showPage(currentPage-1); });
-            $(settings.next).click( function() { showPage(currentPage+1); });
+            $(settings.last).click(function() { showPage(settings.numPages); });
+            $(settings.prev).click(function() { showPage(currentPage-1); });
+            $(settings.next).click(function() { showPage(currentPage+1); });
             $(settings.close).click(hide);
             //keyboard bindings:
             $(document).keyup(function(e) {
@@ -126,6 +146,34 @@
             isVisible = true;
         }
         
+        /**
+         * Activates page navigation forward or backward.
+         * @param direction use 1 for forward navigation and -1 for backward.
+         */ 
+        function activateNav(direction) {
+            if (direction > 0) {
+                $(settings.next + "> img").attr("src", navImages[2].src);
+                $(settings.last + "> img").attr("src", navImages[3].src);
+            } else {
+                $(settings.first + "> img").attr("src", navImages[0].src);
+                $(settings.prev + "> img").attr("src", navImages[1].src);
+            }
+        }
+        
+        /**
+         * Dectivates page navigation forward or backward.
+         * @param direction use 1 for forward navigation and -1 for backward.
+         */ 
+        function deactivateNav(direction) {
+            if (direction > 0) {
+                $(settings.next + "> img").attr("src", navImagesDisabled[2].src);
+                $(settings.last + "> img").attr("src", navImagesDisabled[3].src);
+            } else {
+                $(settings.first + "> img").attr("src", navImagesDisabled[0].src);
+                $(settings.prev + "> img").attr("src", navImagesDisabled[1].src);
+            }
+        }
+        
         
         /**
          * Starts loading the pageNum:th image onto the screen, or puts it there
@@ -136,13 +184,16 @@
             if(newPage == currentPage) return;
             currentPage = newPage;
             
+            if (currentPage <= 1) deactivateNav(-1);
+            else activateNav(-1);
+            if (currentPage >= settings.numPages) deactivateNav(1);
+            else activateNav(1);
+            
             $(settings.currentPage).text(currentPage);
             
-            if(bufferImage.page == currentPage) {
-                if(bufferImage.complete) {
-                    shownImage.src = bufferImage.src;
-                    readyToShow();
-                }
+            if(bufferImage.page == currentPage && bufferImage.complete) {
+                shownImage.src = bufferImage.src;
+                readyToShow();
             } 
             else {  
                 var src = getSourceFor(currentPage);
