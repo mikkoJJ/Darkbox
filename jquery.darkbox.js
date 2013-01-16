@@ -15,6 +15,7 @@
             numPages    : 10,
             srcPattern  : "####.jpg",
             begin       : 0,
+            disableClose	: false,
             
             //keyboard shortcuts:
             keyHide     : 27,   //esc
@@ -90,7 +91,7 @@
             //meta:
             html += '<div id="' + settings.pagecount.substring(1) + '"><span id="' + settings.currentPage.substring(1) + '"></span> / <span id="' + settings.totalPages + '">' + settings.numPages + '</span></div>';
             //close:
-            html += '<a href="javascript://"><div id="' + settings.close.substring(1) + '"></div></a>';
+            if (!settings.disableClose) html += '<a href="javascript://"><div id="' + settings.close.substring(1) + '"></div></a>';
             //close overlay:
             html += '</div>';
             
